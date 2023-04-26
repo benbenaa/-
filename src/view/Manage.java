@@ -209,7 +209,6 @@ public class Manage extends JFrame {
     private void deleteRow(){
         for (int i = model.getRowCount(); i>0; i--) {
             model.removeRow(i-1);
-
         }
 
     }
@@ -218,6 +217,8 @@ public class Manage extends JFrame {
      * 把数据库内所有的数据添加到表格中
      */
     private void selectAllStudent() {
+        resetAll();
+        deleteRow();
         List<Student> students = SqlUtils.selectStudent();
         for (Student value : students) {
             set(value);
@@ -232,11 +233,13 @@ public class Manage extends JFrame {
             JOptionPane.showMessageDialog(null,"学号不能为空","提示信息", JOptionPane.ERROR_MESSAGE);
         }else {
 //            Student student = SqlUtils.selectStudent(numberText.getText());
-            Student student = SqlUtils.callProcedure(Student.class);
+            List<Student> students = SqlUtils.callProcedure(Student.class, Integer.parseInt(numberText.getText()));
             resetAll();
             deleteRow();
-            if (student != null) {
-                set(student);
+            if (students != null) {
+                for (Student stu : students) {
+                    set(stu);
+                }
             }
         }
     }

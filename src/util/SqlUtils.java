@@ -313,17 +313,19 @@ public class SqlUtils {
             JDBCUtils.closeResource(conn,smt);
         }
     }
-    public static <T> T callProcedure(Class<T> clazz){
+    public static <T> List<T> callProcedure(Class<T> clazz,int x){
         CallableStatement cstmt=null;
         Connection conn = null;
         ResultSet rs = null;
         try {
             conn = JDBCUtils.getConnection("Manger");
-            cstmt = conn.prepareCall("call my_proc();");
+            cstmt = conn.prepareCall("{call my_proc2(?)}");
+            cstmt.setInt(1,x);
             rs = cstmt.executeQuery();
             ResultSetMetaData metaData = rs.getMetaData();
             int columnCount = metaData.getColumnCount();
-            if (rs.next()) {
+            ArrayList<T> list = new ArrayList<>();
+            while (rs.next()) {
                 T t = clazz.getDeclaredConstructor().newInstance();
                 for (int i = 0; i < columnCount; i++) {
                     Object value = rs.getObject(i + 1);
@@ -332,8 +334,9 @@ public class SqlUtils {
                     field.setAccessible(true);
                     field.set(t, value);
                 }
-                return t;
+                list.add(t);
             }
+            return list;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -342,14 +345,16 @@ public class SqlUtils {
         return null;
     }
     public static void createProcedure(String table){
-        String sql = "CREATE PROCEDURE my_proc() BEGIN SELECT * FROM "+table+"; END";
+        String sql1 = "CREATE PROCEDURE my_proc1(in sage int) BEGIN SELECT * FROM "+table+" where age<sage; END";
+        String sql2 = "CREATE PROCEDURE my_proc2(in num varchar(20)) BEGIN SELECT * FROM "+table+" where number=num; END";
         Statement smt = null;
         Connection conn = null;
         try {
             //获取连接
             conn = JDBCUtils.getConnection("Manger");
             smt=conn.createStatement();
-            smt.execute(sql);
+            smt.execute(sql1);
+            smt.execute(sql2);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
