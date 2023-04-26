@@ -345,12 +345,11 @@ public class SqlUtils {
         String sql = "CREATE PROCEDURE my_proc() BEGIN SELECT * FROM "+table+"; END";
         Statement smt = null;
         Connection conn = null;
-        boolean result=false;
         try {
             //获取连接
             conn = JDBCUtils.getConnection("Manger");
             smt=conn.createStatement();
-            result=smt.execute(sql);
+            smt.execute(sql);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
