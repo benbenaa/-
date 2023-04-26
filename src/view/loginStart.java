@@ -54,14 +54,14 @@ public class loginStart extends JFrame {
         flowLayout = new FlowLayout(FlowLayout.CENTER);
         flowLayout1 = new FlowLayout(FlowLayout.RIGHT);
         jPanel_1 = new JPanel();//盘子初始化
-        jPanel_1.setBounds(0, 0, WIDTH, HEIGHT);
+        jPanel_1.setBounds(800, 500, WIDTH, HEIGHT);
         jPanel_1.setLayout(null);//设置布局为空
         jPanel_2 = new JPanel();
         jPanel_2.setBounds(0, 70, WIDTH, 50);
         jPanel_2.setLayout(flowLayout);
         jPanel_2.setOpaque(false);
         jPanel_3 = new JPanel();
-        jPanel_3.setBounds(230, 125, 300, 100);
+        jPanel_3.setBounds(230, 125, 300, 300);
         jPanel_3.setLayout(flowLayout1);
         jPanel_3.setOpaque(false);//将当前的盘子设置成透明
         this.setTitle("学生信息管理系统");
@@ -101,7 +101,7 @@ public class loginStart extends JFrame {
 
 
         ok = new JButton("安全登录");
-        ok.setPreferredSize(new Dimension(230, 30));
+        ok.setPreferredSize(new Dimension(280, 30));
         ok.setFont(style.ok_font);
         ok.setBackground(new Color(8, 189, 252));
         ok.setForeground(new Color(0, 35, 254));
@@ -115,7 +115,7 @@ public class loginStart extends JFrame {
             }
         });
         register = new JLabel("注册账号");
-        register.setBounds(10, 350, 100, 40);
+        register.setBounds(10, 380, 100, 40);
         register.setForeground(new Color(249, 249, 247));
         register.setFont(style.register_font);
         register.addMouseListener(new MouseAdapter() {
@@ -127,7 +127,7 @@ public class loginStart extends JFrame {
             }
         });
         find = new JLabel("忘记密码");
-        find.setBounds(700, 350, 100, 40);
+        find.setBounds(700, 380, 100, 40);
         find.setForeground(new Color(249, 249, 247));
         find.setFont(style.register_font);
         find.addMouseListener(new MouseAdapter() {

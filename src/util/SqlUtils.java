@@ -261,13 +261,19 @@ public class SqlUtils {
         Connection conn = null;
         try {
             // 建表语句
-            String tableSql = "create table if not exists user(name varchar(20) not null,"
+            String tableSql1 = "create table if not exists user(name varchar(20) not null,"
                     + "account varchar(20) not null primary key, "+
                     "password varchar(20) not null,"+
                     "phone varchar(20),"+
                     "start int(2) default 0);";
+            String tableSql2="create table if not exists test(num int(5),mark varchar(20));";
             // 建库语句
             String databaseSql = "create database if not exists " + DBName;
+            String tableSql3 = "create table if not exists student(name varchar(20) not null,"
+                    + "sex varchar(20) not null, "+
+                    "age int(11) not null,"+
+                    "grade varchar(20) not null ,"+
+                    "number varchar(20) not null primary key );";
             // 链接数据库
             conn = JDBCUtils.getConnection();
             // 用于执行静态SQL语句并返回其产生的结果的对象
@@ -275,10 +281,13 @@ public class SqlUtils {
             // 执行建库语句
             smt.executeUpdate(databaseSql);
             System.out.println("数据库连接成功！");
+            SqlUtils.createTable("Manger",tableSql3);
+            SqlUtils.createTable("manger",tableSql2);
+            createTrigger("student");
             // 链接新建的数据库
             smt.execute("use "+DBName+";");
             // 执行建表语句
-            int i = smt.executeUpdate(tableSql);
+            int i = smt.executeUpdate(tableSql1);
             // DDL语句返回值为0
             if (i == 0) {
                 User user=new User("zgh","admin","1234","1238",0);
@@ -303,6 +312,69 @@ public class SqlUtils {
         } finally {
             JDBCUtils.closeResource(conn,smt);
         }
-
     }
+    public static <T> T callProcedure(Class<T> clazz){
+        CallableStatement cstmt=null;
+        Connection conn = null;
+        ResultSet rs = null;
+        try {
+            conn = JDBCUtils.getConnection("Manger");
+            cstmt = conn.prepareCall("call my_proc();");
+            rs = cstmt.executeQuery();
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            if (rs.next()) {
+                T t = clazz.getDeclaredConstructor().newInstance();
+                for (int i = 0; i < columnCount; i++) {
+                    Object value = rs.getObject(i + 1);
+                    String columnLabel = metaData.getColumnLabel(i + 1);
+                    Field field = clazz.getDeclaredField(columnLabel);
+                    field.setAccessible(true);
+                    field.set(t, value);
+                }
+                return t;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.closeResource(conn, cstmt, rs);
+        }
+        return null;
+    }
+    public static void createProcedure(String table){
+        String sql = "CREATE PROCEDURE my_proc() BEGIN SELECT * FROM "+table+"; END";
+        Statement smt = null;
+        Connection conn = null;
+        boolean result=false;
+        try {
+            //获取连接
+            conn = JDBCUtils.getConnection("Manger");
+            smt=conn.createStatement();
+            result=smt.execute(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            //关闭资源
+            JDBCUtils.closeResource(conn, smt);
+        }
+    }
+    public static void createTrigger(String table){
+        // 创建触发器
+        String sql = "CREATE TRIGGER my_trigger AFTER update ON "
+                +table+" FOR EACH ROW INSERT INTO test(mark) VALUES ('after_update')";
+        Statement smt = null;
+        Connection conn = null;
+        try {
+            //获取连接
+            conn = JDBCUtils.getConnection("Manger");
+            smt = conn.createStatement();
+            smt.execute(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            //关闭资源
+            JDBCUtils.closeResource(conn, smt);
+        }
+    }
+
 }

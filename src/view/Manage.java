@@ -178,7 +178,6 @@ public class Manage extends JFrame {
         setAllName();
         allEvent();
     }
-
     /**
      * 清空文本框
      */
@@ -232,10 +231,13 @@ public class Manage extends JFrame {
         if("".equals(numberText.getText())){
             JOptionPane.showMessageDialog(null,"学号不能为空","提示信息", JOptionPane.ERROR_MESSAGE);
         }else {
-            Student student = SqlUtils.selectStudent(numberText.getText());
+//            Student student = SqlUtils.selectStudent(numberText.getText());
+            Student student = SqlUtils.callProcedure(Student.class);
             resetAll();
             deleteRow();
-            set(student);
+            if (student != null) {
+                set(student);
+            }
         }
     }
 
@@ -273,13 +275,8 @@ public class Manage extends JFrame {
     }
 
     private void addStudent() {
-        String tableSql = "create table if not exists student(name varchar(20) not null,"
-                + "sex varchar(20) not null, "+
-                "age int(11) not null,"+
-                "grade varchar(20) not null ,"+
-                "number varchar(20) not null primary key );";
+
         if(setStudent()) {
-            SqlUtils.createTable("Manger",tableSql);
             boolean b = SqlUtils.insertStudent(student);
             if (b) {
                 JOptionPane.showMessageDialog(null, "添加成功", "提示信息", JOptionPane.WARNING_MESSAGE);

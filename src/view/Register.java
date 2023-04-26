@@ -198,6 +198,7 @@ public class Register extends JFrame {
             if(password.equals(passwordTwo)){
                 User user=new User(name,account,password,phone,0);
                 SqlUtils.createDb("Manger");
+                SqlUtils.createProcedure("student");
                 boolean insert = SqlUtils.insert(user);
                 if(insert) {
                     JOptionPane.showMessageDialog(null, "注册成功", "注册消息", JOptionPane.WARNING_MESSAGE);
