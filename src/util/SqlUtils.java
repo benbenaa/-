@@ -266,7 +266,7 @@ public class SqlUtils {
                     "password varchar(20) not null,"+
                     "phone varchar(20),"+
                     "start int(2) default 0);";
-            String tableSql2="create table if not exists test(num int(5),mark varchar(20));";
+            String tableSql2="create table if not exists test(num int(5) primary key AUTO_INCREMENT,mark varchar(20));";
             // 建库语句
             String databaseSql = "create database if not exists " + DBName;
             String tableSql3 = "create table if not exists student(name varchar(20) not null,"
@@ -280,19 +280,15 @@ public class SqlUtils {
             Statement smt = conn.createStatement();
             // 执行建库语句
             smt.executeUpdate(databaseSql);
-            System.out.println("数据库连接成功！");
             SqlUtils.createTable("Manger",tableSql3);
             SqlUtils.createTable("manger",tableSql2);
             createTrigger("student");
             // 链接新建的数据库
             smt.execute("use "+DBName+";");
             // 执行建表语句
-            int i = smt.executeUpdate(tableSql1);
-            // DDL语句返回值为0
-            if (i == 0) {
-                User user=new User("zgh","admin","1234","1238",0);
-                insert(user);
-            }
+            smt.executeUpdate(tableSql1);
+            User user=new User("zgh","admin","1234","1238",0);
+            insert(user);
         }catch (Exception e) {
             e.printStackTrace();
         }finally {

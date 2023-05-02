@@ -101,7 +101,7 @@ public class loginStart extends JFrame {
 
 
         ok = new JButton("安全登录");
-        ok.setPreferredSize(new Dimension(280, 30));
+        ok.setPreferredSize(new Dimension(255, 30));
         ok.setFont(style.ok_font);
         ok.setBackground(new Color(8, 189, 252));
         ok.setForeground(new Color(0, 35, 254));
