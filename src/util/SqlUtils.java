@@ -366,6 +366,7 @@ public class SqlUtils {
         Connection conn = null;
         try {
             //获取连接
+            System.out.println("sda");
             conn = JDBCUtils.getConnection("Manger");
             smt = conn.createStatement();
             smt.execute(sql);
